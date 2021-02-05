@@ -1,0 +1,29 @@
+version: "3"
+services:
+  php:
+    build: ./docker/php
+    restart: unless-stopped
+    tty: true
+    working_dir: /var/www
+    volumes:
+      - ./server/:/var/www:delegated
+
+  nginx:
+    image: nginx:latest
+    restart: unless-stopped
+    ports:
+      - "80:80"
+    volumes:
+      - ./server/:/var/www:delegated
+      - ./docker/nginx/conf.d/:/etc/nginx/conf.d/
+
+  init:
+    build: ./docker/php
+    working_dir: /app
+    volumes:
+      - ./server/:/app
+      - ~/.composer:/opt/composer
+    environment:
+      - COMPOSER_HOME=/opt/composer
+    command: >
+      sh -c "composer install"
