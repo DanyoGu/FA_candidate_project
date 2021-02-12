@@ -8,6 +8,33 @@ use App\Http\Requests;
 
 class AddressController extends Controller
 {
+    const THRESHOLD = 10; //Class constant that defines what constitutes a duplicate or not
+   
+    //this helper function uses leveenshtein distance between two strings to determine if something is to be considered a duplicate or not
+    //the threshold is an arbitrary number but can easily be changed
+    //Time complexity is O(n^2) but compared entries only within similar keys of the hashmap constructed
+    
+    public function find_non_dupes($array) {
+        $non_dupes = array();
+        $size_array=count($array);
+        for ($i=0; $i < $size_array; $i++) { 
+            $entry_A = $array[$i];
+            $is_dupe = false;
+    
+            for ($j=$i+1; $j < $size_array; $j++) { 
+                $entry_B = $array[$j];
+                if(levenshtein(implode($entry_A), implode($entry_B)) < self::THRESHOLD) {
+                    $is_dupe = true;
+                }
+        }
+        if(!$is_dupe) {
+                array_push($non_dupes, $entry_A);
+            }
+        }
+    
+     return $non_dupes;
+    }
+
     public function parseAddressesAction(): JsonResponse
     {
 
@@ -15,38 +42,14 @@ class AddressController extends Controller
 
         //create a hash where the key is the first letter of the first name and the value is the array of names that start with a
         //run through the keys of the hash and run n^2 for every element within the subset of that letter, pushing duplicates to an array
-
-        //this helper function uses leveenshtein distance between two strings to determine if something is to be considered a duplicate or not
-        //the threshold is an arbitrary number but can easily be changed
-        //Time complexity is O(n^2) but compared entries only within similar keys of the hashmap constructed
-        function find_non_dupes($array) {
-            $threshold = 10;
-            $non_dupes = array();
-            for ($i=0; $i < count($array); $i++) { 
-                $entry_A = $array[$i];
-                $is_dupe = false;
-
-                for ($j=$i+1; $j < count($array); $j++) { 
-                    $entry_B = $array[$j];
-                    if(levenshtein(implode($entry_A), implode($entry_B)) < $threshold) {
-                        $is_dupe = true;
-                    }
-            }
-            if(!$is_dupe) {
-                    array_push($non_dupes, $entry_A);
-                }
-            }
-
-         return $non_dupes;
-        }
-
+        
         $entries = array();
         $non_duplicate_entries = array();
         $duplicates = array();
 
-
         $first = true;
-        if (($handle = fopen("normal.csv", "r")) !== FALSE) { //doesn't properly read csv yet
+        $path = base_path('normal.csv');
+        if (($handle = fopen($path, "r")) !== FALSE) { //doesn't properly read csv yet
         while (($data = fgetcsv($handle, 1000, ",")) !== FALSE) { //parses csv file row by row
             array_shift($data);
             
@@ -60,27 +63,26 @@ class AddressController extends Controller
             } 
             array_push($entries[$data[0][0]], $data); 
 
+            $num_keys = count(array_keys($entries));
+            for ($i=0; $i < $num_keys; $i++) {  
+                
+                $current_key = array_keys($entries)[$i];
+                $current_array = $entries[$current_key];
+                
+                $result = $this->find_non_dupes($current_array);
+                
+                array_push($non_duplicate_entries, $result);
+            
+            }
+            
+            return new JsonResponse($non_duplicate_entries, 200);
         }
         fclose($handle);
         } else {
-        echo "Error. File not Opened";
+            Log::info("File failed to open", ['file' => $path->file]);
         }
-
-        for ($i=0; $i < count(array_keys($entries)); $i++) { 
-        
-        $current_key = array_keys($entries)[$i];
-        $current_array = $entries[$current_key];
-        
-        $result = find_non_dupes($current_array);
-        
-        array_push($non_duplicate_entries, $result);
-        
-        }
-
-        
-        return new JsonResponse($non_duplicate_entries, 200);
-
 
         
     }
+
 }
