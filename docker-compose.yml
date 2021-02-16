@@ -7,6 +7,7 @@ services:
     working_dir: /var/www
     volumes:
       - ./server/:/var/www:delegated
+      - ./test-files/:/var/www/test-files:delegated
 
   nginx:
     image: nginx:latest

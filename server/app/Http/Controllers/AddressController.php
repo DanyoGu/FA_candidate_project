@@ -14,7 +14,9 @@ class AddressController extends Controller
     //the threshold is an arbitrary number but can easily be changed
     //Time complexity is O(n^2) but compared entries only within similar keys of the hashmap constructed
     
-    public function find_non_dupes($array) {
+    //modified the helper function to return both an array of non duplicate entries as well as the duplicates
+    public function parse_dupes($array) {
+        $dupes = array();
         $non_dupes = array();
         $size_array=count($array);
         for ($i=0; $i < $size_array; $i++) { 
@@ -25,6 +27,7 @@ class AddressController extends Controller
                 $entry_B = $array[$j];
                 if(levenshtein(implode($entry_A), implode($entry_B)) < self::THRESHOLD) {
                     $is_dupe = true;
+                    array_push($dupes, $entry_A, $entry_B);
                 }
         }
         if(!$is_dupe) {
@@ -32,7 +35,8 @@ class AddressController extends Controller
             }
         }
     
-     return $non_dupes;
+     return [$non_dupes, $dupes]; 
+     //return value is a two-dimensional array where the first is an array with only non-duplicate entries, and the second is duplicates only
     }
 
     public function parseAddressesAction(): JsonResponse
@@ -45,10 +49,10 @@ class AddressController extends Controller
         
         $entries = array();
         $non_duplicate_entries = array();
-        $duplicates = array();
+        $duplicate_entries = array();
 
         $first = true;
-        $path = base_path('test-files/normal.csv');
+        $path = base_path('test-files/practice.csv');
         if (($handle = fopen($path, "r")) !== FALSE) { 
         while (($data = fgetcsv($handle, 1000, ",")) !== FALSE) { //parses csv file row by row
             array_shift($data);
@@ -72,10 +76,12 @@ class AddressController extends Controller
             $current_key = array_keys($entries)[$i];
             $current_array = $entries[$current_key];
             
-            $result = $this->find_non_dupes($current_array);
-            
+            $result = $this->parse_dupes($current_array);
+            $non_duplicates = $result[0];
+            $duplicates = $result[1];
 
-            $non_duplicate_entries = array_merge($non_duplicate_entries, $result);
+            $non_duplicate_entries = array_merge($non_duplicate_entries, $non_duplicates);
+            $duplicate_entries = array_merge($duplicate_entries, $duplicates);
 
 
         }
@@ -85,7 +91,7 @@ class AddressController extends Controller
         Log::info("File failed to open", ['file' => $path->file]);
     }
     
-    return new JsonResponse($non_duplicate_entries, 200);
+    return new JsonResponse(["duplicates" => $duplicate_entries, "non-duplicates" => $non_duplicate_entries], 200);
         
     }
 
