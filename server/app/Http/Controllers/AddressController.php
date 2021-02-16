@@ -8,7 +8,7 @@ use App\Http\Requests;
 
 class AddressController extends Controller
 {
-    const THRESHOLD = 10; //Class constant that defines what constitutes a duplicate or not
+    const THRESHOLD = 50; //Class constant that defines what constitutes a duplicate or not
    
     //this helper function uses leveenshtein distance between two strings to determine if something is to be considered a duplicate or not
     //the threshold is an arbitrary number but can easily be changed
@@ -48,40 +48,44 @@ class AddressController extends Controller
         $duplicates = array();
 
         $first = true;
-        $path = base_path('normal.csv');
-        if (($handle = fopen($path, "r")) !== FALSE) { //doesn't properly read csv yet
+        $path = base_path('test-files/normal.csv');
+        if (($handle = fopen($path, "r")) !== FALSE) { 
         while (($data = fgetcsv($handle, 1000, ",")) !== FALSE) { //parses csv file row by row
             array_shift($data);
             
             if($first) {
-            $first = false; //skip the first line of the csv
-            continue;
+                $first = false; //skip the first line of the csv
+                continue;
             }
+            
             //creates hash table where keys are first letter of first name and values are all entries that meet that requirement
-            if (!$entries[$data[0][0]]) {  //causes a warning for undefined array key..?
-            $entries[$data[0][0]] = array();
+            if (!array_key_exists($data[0][0], $entries)) {  
+                $entries[$data[0][0]] = array();
             } 
             array_push($entries[$data[0][0]], $data); 
 
-            $num_keys = count(array_keys($entries));
-            for ($i=0; $i < $num_keys; $i++) {  
-                
-                $current_key = array_keys($entries)[$i];
-                $current_array = $entries[$current_key];
-                
-                $result = $this->find_non_dupes($current_array);
-                
-                array_push($non_duplicate_entries, $result);
-            
-            }
-            
-            return new JsonResponse($non_duplicate_entries, 200);
-        }
-        fclose($handle);
-        } else {
-            Log::info("File failed to open", ['file' => $path->file]);
         }
 
+        $num_keys = count(array_keys($entries));
+        for ($i=0; $i < $num_keys; $i++) {  
+            
+            $current_key = array_keys($entries)[$i];
+            $current_array = $entries[$current_key];
+            
+            $result = $this->find_non_dupes($current_array);
+            
+
+            $non_duplicate_entries = array_merge($non_duplicate_entries, $result);
+
+
+        }
+
+        fclose($handle);
+    } else {
+        Log::info("File failed to open", ['file' => $path->file]);
+    }
+    
+    return new JsonResponse($non_duplicate_entries, 200);
         
     }
 
