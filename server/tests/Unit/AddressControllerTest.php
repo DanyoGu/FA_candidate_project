@@ -2,7 +2,9 @@
 
 namespace Tests\Unit;
 
-use PHPUnit\Framework\TestCase;
+// use PHPUnit\Framework\TestCase;
+use Tests\TestCase;
+
 
 class AddressControllerTest extends TestCase
 {
@@ -13,13 +15,11 @@ class AddressControllerTest extends TestCase
      */
     public function testExample()
     {
-        $response = $this->json('GET', '/parse-addresses', []);
-
+        $response = $this->json('GET', 'api/parse-addresses');
         $response
         ->assertStatus(200)
-        ->assertJson([
-            'duplicates' => true,
-            'non-duplicates' => true
+        ->assertEquals([
+            count($response["duplicates"], 0)
         ]);
     }
 }

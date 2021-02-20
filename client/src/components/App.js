@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import Collapsible from '../Collapsible';
 
 class App extends Component {
   constructor() {
@@ -22,8 +23,7 @@ class App extends Component {
   render() {
 
     let { isLoaded, entries } = this.state;
-    console.log(entries);
-
+ 
     if (!isLoaded ) {
       return <div> Loading.... </div>;
     }
@@ -31,20 +31,23 @@ class App extends Component {
     return (
       <div className="App">
         
-
-      <h1>Non Duplicate Entries</h1>
+      <Collapsible data={entries["duplicates"]} />
+      <Collapsible data={entries["non-duplicates"]} />
+      {/* <h1>Non Duplicate Entries</h1>
           {entries["non-duplicates"].map(entry => (
               <div>
-              {entry[0]} {entry[1]}, {entry[2]}, {entry[3]}, {entry[4]}, {entry[5]}, {entry[6]}, {entry[7]}, {entry[8]}, {entry[9]}, {entry[10]},
+              {entry[0]} {entry[1]}, {entry[2]}, {entry[3]}, {entry[4]}, {entry[5]}, {entry[6]}, {entry[7]}, {entry[8]}, {entry[9]}, {entry[10]}
               </div>
           ))}
       <h1>Duplicate Entries</h1>
           {entries["duplicates"].map(entry => (
               <div>
-              {entry[0]} {entry[1]}, {entry[2]}, {entry[3]}, {entry[4]}, {entry[5]}, {entry[6]}, {entry[7]}, {entry[8]}, {entry[9]}, {entry[10]},
+              {entry[0]} {entry[1]}, {entry[2]}, {entry[3]}, {entry[4]}, {entry[5]}, {entry[6]}, {entry[7]}, {entry[8]}, {entry[9]}, {entry[10]}
               </div>
           ))}
-
+      <Collapsible />
+      <Collapsible />
+      <Collapsible /> */}
 
       </div>
     );

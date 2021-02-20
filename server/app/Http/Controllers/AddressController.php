@@ -38,7 +38,29 @@ class AddressController extends Controller
      return [$non_dupes, $dupes]; 
      //return value is a two-dimensional array where the first is an array with only non-duplicate entries, and the second is duplicates only
     }
-
+    public function array_mapper($array) {
+        $new_array = array();
+        $size = count($array);
+        for ($i=0; $i < $size; $i++) { 
+            $object = (object) [
+                'id' => $array[$i][0],
+                'first_name' => $array[$i][1],
+                'last_name' => $array[$i][2],
+                'company' => $array[$i][3],
+                'email' => $array[$i][4],
+                'address1' => $array[$i][5],
+                'address2' => $array[$i][6],
+                'zip' => $array[$i][7],
+                'city' => $array[$i][8],
+                'state_long' => $array[$i][9],
+                'state' => $array[$i][10],
+                'phone' => $array[$i][11]
+            ];
+            array_push($new_array, $object);
+        }
+        return $new_array;
+    }
+    
     public function parseAddressesAction(): JsonResponse
     {
 
@@ -55,7 +77,7 @@ class AddressController extends Controller
         $path = base_path('test-files/practice.csv');
         if (($handle = fopen($path, "r")) !== FALSE) { 
         while (($data = fgetcsv($handle, 1000, ",")) !== FALSE) { //parses csv file row by row
-            array_shift($data);
+            // array_shift($data);
             
             if($first) {
                 $first = false; //skip the first line of the csv
@@ -90,6 +112,9 @@ class AddressController extends Controller
     } else {
         Log::info("File failed to open", ['file' => $path->file]);
     }
+    
+    $duplicate_entries = $this->array_mapper($duplicate_entries);
+    $non_duplicate_entries = $this->array_mapper($non_duplicate_entries);
     
     return new JsonResponse(["duplicates" => $duplicate_entries, "non-duplicates" => $non_duplicate_entries], 200);
         

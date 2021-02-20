@@ -1,9 +1,10 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import App from './App';
+import App from './components/App';
+import HookApp from './HookApp';
 import './index.css';
 
 ReactDOM.render(
-    <App />,
+    <HookApp />,
   document.getElementById('root')
 );
