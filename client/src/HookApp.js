@@ -27,12 +27,10 @@ function HookApp() {
     return <div>Loading...</div>;
   } else {
       return (
-        <div className="App">
+        <div className="HookApp">
 
-
-        <HookCollapsible data={entries["duplicates"]} title={"Duplicates"}/>
-        <HookCollapsible data={entries["non-duplicates"]} title={"Non-Duplicates"}/>
-
+          <HookCollapsible data={entries["duplicates"]} title={"Duplicates"}/>
+          <HookCollapsible data={entries["non-duplicates"]} title={"Non-Duplicates"}/>
 
         </div>
       );

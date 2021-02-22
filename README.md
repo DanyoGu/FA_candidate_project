@@ -5,10 +5,6 @@ Notice the test-files folder. Use normal.csv to test your code and advanced.csv 
 
 Docker and Docker-Compose is used to bootstrap the PHP server. Installation instructions can be found here: https://docs.docker.com/get-docker/
 
-## Installing Yarn
-
-The project uses Yarn to manage React dependencies. Installation instructions can be found here: https://classic.yarnpkg.com/en/docs/install
-
 ## Server
 
 ### Starting the server
@@ -29,5 +25,6 @@ This controller endpoint can be accessed by making an AJAX request to http://loc
 ### Starting the client
 
 - Navigate to client directory `cd client`
-- Run `yarn install` to install React dependencies
-- Run `yarn start` to start the React application. You can access the client in your browser at http://localhost:3000
+- Run `npm install` to install React dependencies
+- Run `npm install react-table` to install the React Library for formatting the data
+- Run `npm start` to start the React application. You can access the client in your browser at http://localhost:3000

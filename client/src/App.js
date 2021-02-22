@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import Collapsible from '../Collapsible';
+import Collapsible from './components/Collapsible';
 
 class App extends Component {
   constructor() {

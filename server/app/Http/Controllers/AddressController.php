@@ -30,6 +30,7 @@ class AddressController extends Controller
                     array_push($dupes, $entry_A, $entry_B);
                 }
         }
+        
         if(!$is_dupe) {
                 array_push($non_dupes, $entry_A);
             }
@@ -74,7 +75,7 @@ class AddressController extends Controller
         $duplicate_entries = array();
 
         $first = true;
-        $path = base_path('test-files/practice.csv');
+        $path = base_path('test-files/normal.csv');
         if (($handle = fopen($path, "r")) !== FALSE) { 
         while (($data = fgetcsv($handle, 1000, ",")) !== FALSE) { //parses csv file row by row
             // array_shift($data);
