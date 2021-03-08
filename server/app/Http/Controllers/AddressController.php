@@ -25,7 +25,7 @@ class AddressController extends Controller
     
             for ($j=$i+1; $j < $size_array; $j++) { 
                 $entry_B = $array[$j];
-                if(levenshtein(implode($entry_A), implode($entry_B)) < self::THRESHOLD) {
+                if(levenshtein(implode($entry_A), implode($entry_B)) < self::THRESHOLD) { 
                     $is_dupe = true;
                     array_push($dupes, $entry_A, $entry_B);
                 }
@@ -75,7 +75,7 @@ class AddressController extends Controller
         $duplicate_entries = array();
 
         $first = true;
-        $path = base_path('test-files/normal.csv');
+        $path = base_path('test-files/advanced.csv');
         if (($handle = fopen($path, "r")) !== FALSE) { 
         while (($data = fgetcsv($handle, 1000, ",")) !== FALSE) { //parses csv file row by row
             // array_shift($data);
