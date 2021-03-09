@@ -1,6 +1,12 @@
-# FormAssembly Assignment
+# Overview
 
-Notice the test-files folder. Use normal.csv to test your code and advanced.csv if you want a litte bit more of a challenge.
+This assignment was a paid part of an interview process for another company where I had to parse through the files found in the test-files folder and remove similar entries and display them in a React component. Entries which could be considered duplicates include something like this:
+
+bill,smith,bsmith@gmail.com,190 main st boston mass
+bill,smith,bsmith@gmail.com,400 west street boston ma
+
+The sorting algorithm I implemented can be found in the server/app/Http/AddressController.php. React Component can be found in client/src/HookApp.js. Technologies used include PHP, Laravel, ReactHooks and Docker.
+
 ## Installing Docker
 
 Docker and Docker-Compose is used to bootstrap the PHP server. Installation instructions can be found here: https://docs.docker.com/get-docker/
